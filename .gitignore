@@ -1,0 +1,8 @@
+data/
+data2/
+__pycache__/
+stargan_celeba_128/
+stargan_celeba_256/
+solver.py
+.ipynb_checkpoints
+*.avi
