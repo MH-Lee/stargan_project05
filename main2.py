@@ -31,6 +31,7 @@ fourcc = cv2.VideoWriter_fourcc(*args["codec"])
 writer = None
 
 ###### GAN Argument Start#####
+'''
 gan_args = dict()
 gan_args['c_dim'] = 5
 gan_args['c2_dim'] = 8
@@ -74,10 +75,13 @@ gan_args['sample_step'] = 1000
 gan_args['model_save_step'] = 10000
 gan_args['lr_update_step'] = 1000
 config = gan_args
+'''
 ###### GAN Argument End#####
 
 mode = 'k'
 video = 'v'
+face_function = input("face mode(b=black hair, g=gender, age=a) : ")
+
 if mode == 'k':
     mode = "knn"
     os.system("python knn.py")
@@ -114,9 +118,6 @@ if video == 'v':
     vc = cv2.VideoCapture('./data/video3.mp4')
     length = int(vc.get(cv2.CAP_PROP_FRAME_COUNT))
     print ('length :', length)
-
-    # if args["with_draw"] == 'True':
-    #     cv2.namedWindow('show', 0)
 
     dir_name = 'test_data'  #+ "_" + str(idx)
     if not os.path.exists(dir_name):
@@ -183,12 +184,6 @@ if video == 'v':
             refined_box = [t-40,r+40,b+40,l-40]
             list_bboxes.append(refined_box)
             list_confidence.append(confidence)
-            #print(refined_box)
-            #path = "Users/a/Workspace/tkwoo_project/Eolgani_project/" + dir_name
-
-
-
-            #f.write(file_name + " " + "-1  1  1 -1 -1 -1 -1 -1 -1 -1 -1  1 -1 -1 -1 -1 -1 -1  1  1 -1  1 -1 -1  1 -1 -1  1 -1 -1 -1  1  1 -1  1 -1  1 -1 -1  1"+ '\n')
 
     ### facenet
         if(len(list_bboxes)>0) :
@@ -237,14 +232,21 @@ if video == 'v':
                     cv2.imwrite(os.path.join(dir_name , file_name) ,crop_img)
                     height, width = crop_img.shape[:2]
                     print(height, width)
-                    celeba_loader = get_loader(config['celeba_image_dir'], config['attr_path'], config['selected_attrs'],
-                                               config['celeba_crop_size'], config['image_size'], config['batch_size'],
-                                               'CelebA', config['mode'], config['num_workers'])
-
-                    solver = Solver(celeba_loader, config)
-                    solver.test()
-                    gan_img = cv2.imread(os.path.join('test_data/result' , '1-1-images-black.jpg') , 1)
-
+                    os.system("python elice_project.py")
+                    # celeba_loader = get_loader(config['celeba_image_dir'], config['attr_path'], config['selected_attrs'],
+                    #                            config['celeba_crop_size'], config['image_size'], config['batch_size'],
+                    #                            'CelebA', config['mode'], config['num_workers'])
+                    #
+                    # solver = Solver(celeba_loader, config)
+                    # solver.test()
+                    if face_function == "b":
+                        gan_img = cv2.imread(os.path.join('test_data/result' , '1-1-images-black.jpg') , 1)
+                    elif face_function == "g":
+                        gan_img = cv2.imread(os.path.join('test_data/result' , '4-1-images-gender.jpg') , 1)
+                    elif face_function == "a":
+                        gan_img = cv2.imread(os.path.join('test_data/result' , '5-1-images-age.jpg') , 1)
+                    else:
+                        gan_img = cv2.imread(os.path.join('test_data/result' , '2-1-images-blond.jpg') , 1)
                     gan_img2 = cv2.resize(gan_img,(height,width))
                     img_bgr_blur[t:b, l:r] = gan_img2
 
